@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Deck, Card, ThemeColor } from '../types';
-import { Plus, BookOpen, Edit, Trash2, Library, Play, Palette, Check, Download, Upload } from 'lucide-react';
+import { Plus, BookOpen, Edit, Trash2, Library, Play, Palette, Check, Download, Upload, AlertTriangle } from 'lucide-react';
 import { getCardLevel } from '../services/srs';
 
 interface DeckDashboardProps {
@@ -25,6 +25,7 @@ export const DeckDashboard: React.FC<DeckDashboardProps> = ({
   onImportData
 }) => {
   const [isCreating, setIsCreating] = useState(false);
+  const [deckToDelete, setDeckToDelete] = useState<Deck | null>(null); // State cho modal xóa
   const [newDeckName, setNewDeckName] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -80,6 +81,13 @@ export const DeckDashboard: React.FC<DeckDashboardProps> = ({
       };
       reader.readAsText(file);
       e.target.value = ''; // reset
+  };
+
+  const confirmDeleteDeck = () => {
+    if (deckToDelete) {
+        onDeleteDeck(deckToDelete.id);
+        setDeckToDelete(null);
+    }
   };
 
   const renderDeckStats = (cards: Card[]) => {
@@ -197,6 +205,7 @@ export const DeckDashboard: React.FC<DeckDashboardProps> = ({
         </div>
       </header>
 
+      {/* Modal Tạo bộ thẻ mới */}
       {isCreating && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
@@ -208,7 +217,7 @@ export const DeckDashboard: React.FC<DeckDashboardProps> = ({
                 value={newDeckName}
                 onChange={(e) => setNewDeckName(e.target.value)}
                 placeholder="VD: Từ vựng chuyên ngành..."
-                className={`w-full p-3 border border-slate-300 rounded-lg mb-4 focus:ring-2 focus:ring-${themeColor}-500 outline-none`}
+                className={`w-full p-3 bg-white border border-slate-300 rounded-lg mb-4 focus:ring-2 focus:ring-${themeColor}-500 outline-none`}
               />
               <div className="flex justify-end gap-3">
                 <button 
@@ -226,6 +235,40 @@ export const DeckDashboard: React.FC<DeckDashboardProps> = ({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Xác nhận xóa */}
+      {deckToDelete && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl border-2 border-red-100">
+            <div className="flex flex-col items-center text-center">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-500 mb-4">
+                    <AlertTriangle size={24} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-800 mb-2">Xóa bộ thẻ?</h3>
+                <p className="text-slate-500 mb-6">
+                    Bạn có chắc chắn muốn xóa bộ thẻ <strong className="text-slate-800">"{deckToDelete.name}"</strong>? 
+                    <br/>
+                    <span className="text-xs text-red-500 mt-1 block">Hành động này không thể hoàn tác.</span>
+                </p>
+                
+                <div className="flex w-full gap-3">
+                    <button 
+                    onClick={() => setDeckToDelete(null)}
+                    className="flex-1 px-4 py-2.5 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl font-medium transition-colors"
+                    >
+                    Hủy bỏ
+                    </button>
+                    <button 
+                    onClick={confirmDeleteDeck}
+                    className="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-xl hover:bg-red-600 font-medium transition-colors shadow-lg shadow-red-200"
+                    >
+                    Xóa vĩnh viễn
+                    </button>
+                </div>
+            </div>
           </div>
         </div>
       )}
@@ -250,7 +293,7 @@ export const DeckDashboard: React.FC<DeckDashboardProps> = ({
             <div key={deck.id} className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all border border-slate-200 flex flex-col justify-between h-auto relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                  <button 
-                    onClick={(e) => { e.stopPropagation(); onDeleteDeck(deck.id); }}
+                    onClick={(e) => { e.stopPropagation(); setDeckToDelete(deck); }}
                     className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
                     title="Xóa bộ thẻ"
                   >

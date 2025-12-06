@@ -177,7 +177,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deck, onUpdateDeck, onSt
              {isRenaming ? (
                <input 
                  autoFocus
-                 className={`text-3xl font-bold text-slate-900 border-b-2 border-${themeColor}-500 outline-none bg-transparent w-full md:w-96`}
+                 className={`text-3xl font-bold text-slate-900 border-b-2 border-${themeColor}-500 outline-none bg-white w-full md:w-96 rounded-lg px-2`}
                  value={deckName}
                  onChange={(e) => setDeckName(e.target.value)}
                  onBlur={saveDeckName}
@@ -268,7 +268,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deck, onUpdateDeck, onSt
                              <input 
                                 value={fieldNames.front}
                                 onChange={(e) => setFieldNames({...fieldNames, front: e.target.value})}
-                                className="text-xs w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="text-xs w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
                                 placeholder="Tên trường 1 (VD: Từ vựng)"
                              />
                         </div>
@@ -277,7 +277,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deck, onUpdateDeck, onSt
                              <input 
                                 value={fieldNames.backPrimary}
                                 onChange={(e) => setFieldNames({...fieldNames, backPrimary: e.target.value})}
-                                className="text-xs w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="text-xs w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
                                 placeholder="Tên trường 2 (VD: Nghĩa)"
                              />
                         </div>
@@ -286,7 +286,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deck, onUpdateDeck, onSt
                              <input 
                                 value={fieldNames.backSecondary}
                                 onChange={(e) => setFieldNames({...fieldNames, backSecondary: e.target.value})}
-                                className="text-xs w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none"
+                                className="text-xs w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
                                 placeholder="Tên trường 3 (VD: Ví dụ)"
                              />
                         </div>
@@ -314,7 +314,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deck, onUpdateDeck, onSt
                     onChange={(e) => setFront(e.target.value)}
                     placeholder="Nội dung chính..."
                     rows={2}
-                    className={`w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-${themeColor}-500 outline-none transition-all`}
+                    className={`w-full p-3 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-${themeColor}-500 outline-none transition-all`}
                   />
                 </div>
                 
@@ -331,7 +331,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deck, onUpdateDeck, onSt
                     onChange={(e) => setBack1(e.target.value)}
                     placeholder="Giải nghĩa / Định nghĩa..."
                     rows={2}
-                    className={`w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-${themeColor}-500 outline-none transition-all`}
+                    className={`w-full p-3 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-${themeColor}-500 outline-none transition-all`}
                   />
                 </div>
 
@@ -346,7 +346,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deck, onUpdateDeck, onSt
                     onChange={(e) => setBack2(e.target.value)}
                     placeholder="Ví dụ / Ghi chú thêm..."
                     rows={2}
-                    className={`w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-${themeColor}-500 outline-none transition-all`}
+                    className={`w-full p-3 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-${themeColor}-500 outline-none transition-all`}
                   />
                 </div>
 
@@ -374,7 +374,7 @@ export const DeckEditor: React.FC<DeckEditorProps> = ({ deck, onUpdateDeck, onSt
                         onChange={(e) => setBulkText(e.target.value)}
                         placeholder="Dán danh sách hoặc tải file..."
                         rows={12}
-                        className={`w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-${themeColor}-500 outline-none transition-all font-mono text-sm`}
+                        className={`w-full p-3 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-${themeColor}-500 outline-none transition-all font-mono text-sm`}
                       />
 
                     <button

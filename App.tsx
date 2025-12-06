@@ -60,6 +60,7 @@ const DEFAULT_DECKS: Deck[] = [
 ];
 
 const STORAGE_KEY = 'FLASHCARD_PRO_DATA_V1';
+const THEME_STORAGE_KEY = 'FLASHCARD_PRO_THEME_V1';
 
 function App() {
   // Initialize state from LocalStorage if available
@@ -77,12 +78,29 @@ function App() {
 
   const [activeDeckId, setActiveDeckId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.DASHBOARD);
-  const [themeColor, setThemeColor] = useState<ThemeColor>('indigo');
+  
+  // Initialize theme from LocalStorage
+  const [themeColor, setThemeColor] = useState<ThemeColor>(() => {
+    try {
+      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+      if (savedTheme) {
+        return savedTheme as ThemeColor;
+      }
+    } catch (error) {
+      console.error("Failed to load theme from storage:", error);
+    }
+    return 'indigo';
+  });
 
   // Persist data to LocalStorage whenever decks change
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(decks));
   }, [decks]);
+
+  // Persist theme to LocalStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem(THEME_STORAGE_KEY, themeColor);
+  }, [themeColor]);
 
   // Deck Management Functions
   const handleCreateDeck = (name: string) => {
@@ -118,12 +136,11 @@ function App() {
   };
 
   const handleDeleteDeck = (id: string) => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa bộ thẻ này?")) {
-      setDecks(prevDecks => prevDecks.filter(d => d.id !== id));
-      if (activeDeckId === id) {
-        setActiveDeckId(null);
-        setViewMode(ViewMode.DASHBOARD);
-      }
+    // Logic xác nhận đã được chuyển vào UI (Modal), ở đây chỉ thực hiện xóa
+    setDecks(prevDecks => prevDecks.filter(d => d.id !== id));
+    if (activeDeckId === id) {
+      setActiveDeckId(null);
+      setViewMode(ViewMode.DASHBOARD);
     }
   };
 

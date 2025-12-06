@@ -38,6 +38,33 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onExit, onUpd
 
   const currentCard = studyQueue[currentCardIndex];
 
+  // TTS Function
+  const speakText = useCallback((text: string) => {
+    if (!text) return;
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    // Prefer English voice, but browser will often auto-detect or default correctly.
+    // Setting en-US specifically as requested for "English" logic
+    utterance.lang = 'en-US'; 
+    utterance.rate = 0.9; // Slightly slower for better clarity
+    
+    window.speechSynthesis.speak(utterance);
+  }, []);
+
+  // Auto-play audio when card changes
+  useEffect(() => {
+    if (isLoaded && !isFinished && currentCard) {
+      // Small timeout to allow UI to render and avoid race conditions with speech synthesis cancellation
+      const timer = setTimeout(() => {
+          speakText(currentCard.front);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentCard, isFinished, isLoaded, speakText]);
+
   const handleRating = useCallback((rating: Rating) => {
     if (!currentCard) return;
 
@@ -92,6 +119,9 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onExit, onUpd
       // Thay đổi: Space luôn luôn đảo trạng thái lật (Flip Toggle)
       // Không tự động đánh giá nữa
       setIsFlipped(prev => !prev);
+    } else if (e.key === 'q' || e.key === 'Q') {
+      // Speak Front
+      speakText(currentCard.front);
     } else if (e.code === 'Escape') {
         onExit();
     } else if (isFlipped) {
@@ -104,7 +134,7 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onExit, onUpd
         handleRating(Rating.HARD);
       }
     }
-  }, [isLoaded, isFinished, isFlipped, handleRating, onExit, studyQueue.length, handleReviewAll]);
+  }, [isLoaded, isFinished, isFlipped, handleRating, onExit, studyQueue.length, handleReviewAll, currentCard, speakText]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -129,13 +159,13 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onExit, onUpd
                         className={`w-full px-6 py-3 bg-${themeColor}-600 text-white rounded-xl font-medium hover:bg-${themeColor}-700 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-${themeColor}-200`}
                         title="Phím tắt: Space"
                     >
-                        <PlayCircle size={20} /> Ôn tập tất cả (Space)
+                        <PlayCircle size={20} /> Ôn tập tất cả
                     </button>
                     <button 
                         onClick={onExit}
                         className="w-full px-6 py-3 bg-slate-100 text-slate-600 rounded-xl font-medium hover:bg-slate-200 transition-colors"
                     >
-                        Quay về danh sách (Esc)
+                        Quay về danh sách
                     </button>
                 </div>
               </div>
@@ -160,13 +190,13 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onExit, onUpd
                          title="Phím tắt: Space"
                     >
                         <RotateCw size={18} className="inline mr-2"/>
-                        Ôn lại lần nữa (Space)
+                        Ôn lại lần nữa
                     </button>
                     <button 
                         onClick={onExit}
                         className={`w-full px-6 py-3 bg-${themeColor}-600 text-white rounded-xl font-medium hover:bg-${themeColor}-700 transition-colors`}
                     >
-                        Quay về danh sách (Esc)
+                        Quay về danh sách
                     </button>
                 </div>
               </div>
@@ -209,6 +239,7 @@ export const StudySession: React.FC<StudySessionProps> = ({ cards, onExit, onUpd
             onFlip={() => setIsFlipped(!isFlipped)}
             themeColor={themeColor}
             fieldNames={fieldNames}
+            onSpeak={() => speakText(currentCard.front)}
         />
 
         {/* Controls */}

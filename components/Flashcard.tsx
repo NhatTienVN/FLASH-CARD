@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, ThemeColor, DeckFieldNames } from '../types';
+import { Volume2 } from 'lucide-react';
 
 interface FlashcardProps {
   card: Card;
@@ -7,6 +8,7 @@ interface FlashcardProps {
   onFlip: () => void;
   themeColor: ThemeColor;
   fieldNames?: DeckFieldNames;
+  onSpeak: () => void;
 }
 
 export const Flashcard: React.FC<FlashcardProps> = ({ 
@@ -14,7 +16,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({
   isFlipped, 
   onFlip, 
   themeColor, 
-  fieldNames = { front: 'Trường 1', backPrimary: 'Trường 2', backSecondary: 'Trường 3' }
+  fieldNames = { front: 'Trường 1', backPrimary: 'Trường 2', backSecondary: 'Trường 3' },
+  onSpeak
 }) => {
   return (
     <div 
@@ -26,6 +29,18 @@ export const Flashcard: React.FC<FlashcardProps> = ({
       >
         {/* Front Face (Field 1) */}
         <div className="absolute w-full h-full backface-hidden bg-white border border-slate-200 rounded-3xl flex flex-col items-center justify-center p-8 select-none">
+          {/* Audio Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Ngăn chặn việc lật thẻ khi bấm nút loa
+              onSpeak();
+            }}
+            className="absolute top-6 right-6 p-3 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-all z-20"
+            title="Đọc phát âm (Phím Q)"
+          >
+            <Volume2 size={24} />
+          </button>
+
           <span className="text-xs text-slate-400 uppercase tracking-widest font-bold mb-4 bg-slate-50 px-3 py-1 rounded-full">
             {fieldNames.front}
           </span>
